@@ -1,0 +1,22 @@
+.alert-success{
+    width: 100%;
+    background-color: rgb(255, 255, 255);
+    color: rgb(9, 128, 19);
+    text-align: center;
+    padding: 5px 0px;
+    border-radius: 10px;
+    font-weight: bold;
+    margin-top: 3px;
+    margin:1rem auto;
+}
+.alert-danger{
+    width: 100%;
+    background-color:rgb(255, 255, 255);
+    color:red;
+    padding: 5px 0px;
+    text-align: center;
+     border-radius: 10px;
+    font-weight: bold;
+   
+    margin: 1rem auto;
+}
