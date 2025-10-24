@@ -47,11 +47,11 @@ if(adminEmails.includes(user.email)){
   await user.save()
 } 
    // ✅ Use environment variable
-    const token = jwt.sign({ userId: user._id, email: user.email }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ userId: user._id, email: user.email, isAdmin:user.isAdmin }, process.env.JWT_SECRET, {
       expiresIn: "1h",
     });
 
-    res.json({ message: "Login successful✅", token:token });
+    res.json({ message: "Login successful✅", token:token,isAdmin:user.isAdmin });
   } catch (err) {
     res.status(500).json({ message: "Server error" });
   }

@@ -1,26 +1,32 @@
 
 
 import { useState,useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,useLocation } from "react-router-dom";
 import axios from "axios";
 import logo from "../../assets/logo.png";
 import Alert from "../../components/Alert";
 
 export default function LoginPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [isSignup, setIsSignup] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showAlert, setShowAlert] = useState(null);
 
-  useEffect(()=>{
-  if(localStorage.getItem("token")){
-   
-    navigate("/constituencies",{replace:true})
+  useEffect(() => {
+
+    if (localStorage.getItem("token")) {
+      navigate("/constituencies", { replace: true });
+    }
+
   
-}
-},[])
+    const params = new URLSearchParams(location.search);
+    if (params.get("mode") === "signup") {
+      setIsSignup(true);
+    }
+  }, [location.search, navigate]);
 
   const handleSubmit = async (e) => {
   e.preventDefault();
@@ -39,11 +45,19 @@ export default function LoginPage() {
     setTimeout(() => {setEmail("");setPassword("");setConfirmPassword("");setShowAlert(null)}, 3000);
 
     if (res.data.token) {
-      localStorage.setItem("token", res.data.token);
-      setShowAlert({ type: "success", msg: res.data.message });
-      setTimeout(() =>  navigate("/constituencies"), 3000);
-     
+  localStorage.setItem("token", res.data.token);
+
+  setShowAlert({ type: "success", msg: res.data.message });
+
+  setTimeout(() => {
+    if (res.data.isAdmin) {
+      navigate("/authority/dashboard"); // admin route
+    } else {
+      navigate("/constituencies"); // user route
     }
+  }, 2000);
+}
+
   } catch (err) {
     setShowAlert({ type: "danger", msg: err.response?.data?.message || "Something went wrong" });
     setTimeout(() =>{setEmail("");setPassword(""); setShowAlert(null)}, 3000);
