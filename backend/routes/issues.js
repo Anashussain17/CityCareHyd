@@ -33,6 +33,9 @@ router.post("/", authMiddleware,upload.single("image"), async (req, res) => {
       description,
       category,
       imageUrl: req.file ? `/uploads/${req.file.filename}` : null,
+
+      // imageUrl: req.file ? `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}` : null,
+
       location: {
         latitude: latitude ? parseFloat(latitude) : null,
         longitude: longitude ? parseFloat(longitude) : null,

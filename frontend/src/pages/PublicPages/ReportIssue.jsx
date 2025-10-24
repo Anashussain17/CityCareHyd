@@ -77,13 +77,16 @@ function ReportIssue() {
           setShowAlert(null);
         }, 3000);
       }
-    } catch (error) {
+    } catch (err) {
       if (err.response && err.response.status === 401) {
           // Token expired or invalid
           localStorage.removeItem("token");
           navigate("/login");
         } else{
-      console.error("Error reporting issue", error);
+      console.error("Error reporting issue", err);
+          setShowAlert({ type: "danger", msg: "Failed to submit report." });
+    setTimeout(()=> setShowAlert(null), 3000);
+
     }}
   };
 
