@@ -45,7 +45,7 @@ export default function ConstituencyPage() {
     }
     const fetchCounts = async () => {
       try {
-        const res = await axios.get("http://localhost:5717/api/issues/counts", {
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/issues/counts`, {
           headers: { token: localStorage.getItem("token") },
         });
         setIssueCounts(res.data);

@@ -37,7 +37,7 @@ export default function IssueDescription() {
 
     const fetchIssue = async () => {
       try {
-        const res = await axios.get(`http://localhost:5717/api/issues/${id}`, {
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/issues/${id}`, {
           headers: { token: localStorage.getItem("token") },
         });
         setIssue(res.data.issue);
@@ -59,7 +59,7 @@ export default function IssueDescription() {
     if (!newComment.trim()) return;
     try {
       const res = await axios.post(
-        `http://localhost:5717/api/issues/${id}/comment`,
+        `${import.meta.env.VITE_API_URL}/api/issues/${id}/comment`,
         { text: newComment }
       );
       setComments([res.data.comment, ...comments]);
@@ -106,7 +106,7 @@ export default function IssueDescription() {
         <div className="grid grid-cols-1 md:grid-cols-2">
           <div>
             <img
-              src={`http://localhost:5717${issue.imageUrl}`}
+              src={`${import.meta.env.VITE_API_URL}${issue.imageUrl}`}
               alt={issue.title}
               className="w-full h-60 sm:h-72 md:h-80 object-cover"
             />
@@ -173,9 +173,9 @@ export default function IssueDescription() {
     Resolution Proof:
     </h3>
     <img
-      src={`http://localhost:5717${issue.resolvedPhoto}`}
+      src={`${import.meta.env.VITE_API_URL}${issue.resolvedPhoto}`}
       alt="Resolved Issue"
-      className="w-full h-64 sm:h-72 md:h-80 object-cover rounded-lg px-50 shadow-md border border-gray-200"
+      className="w-full h-64 sm:h-72 md:h-80 object-cover rounded-lg md:px-50 shadow-md border border-gray-200"
     />
     <p className="text-xs text-center text-gray-600 mt-1">
                       Resolved on:{" "}
