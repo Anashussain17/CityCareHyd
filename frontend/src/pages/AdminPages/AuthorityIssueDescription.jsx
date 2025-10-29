@@ -40,7 +40,7 @@ const AuthorityIssueDescription = () => {
     const fetchIssue = async () => {
       setLoading(true);
       try {
-        const res = await axios.get(`${BASE_URL}/api/authority/issue/${id}`, {
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/authority/issue/${id}`, {
           headers,
         });
         if (res.data?.success) setIssue(res.data.issue);
@@ -64,12 +64,12 @@ const AuthorityIssueDescription = () => {
     setPostingComment(true);
     try {
       await axios.post(
-        `${BASE_URL}/api/authority/issue/${id}/comment`,
+        `${import.meta.env.VITE_API_URL}/api/authority/issue/${id}/comment`,
         { text: comment },
         { headers }
       );
       setComment("");
-      const res = await axios.get(`${BASE_URL}/api/authority/issue/${id}`, {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/authority/issue/${id}`, {
         headers,
       });
       if (res.data?.success) setIssue(res.data.issue);
@@ -93,10 +93,10 @@ const AuthorityIssueDescription = () => {
     formData.append("resolvedPhoto", resolvedImage);
 
     try {
-      await axios.post(`${BASE_URL}/api/authority/issue/${id}/resolve`, formData, {
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/authority/issue/${id}/resolve`, formData, {
         headers: { ...headers, "Content-Type": "multipart/form-data" },
       });
-      const res = await axios.get(`${BASE_URL}/api/authority/issue/${id}`, {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/authority/issue/${id}`, {
         headers,
       });
       if (res.data?.success) setIssue(res.data.issue);
@@ -218,7 +218,7 @@ const AuthorityIssueDescription = () => {
                 <div className="flex-1">
                   <p className="font-semibold text-gray-700 mb-2">Reported Photo</p>
                   <img
-                    src={urlFor(issue.imageUrl)}
+                    src={`${import.meta.env.VITE_API_URL}${issue.imageUrl}`}
                     alt="Reported"
                     className="w-full h-48 object-cover rounded-lg"
                   />
@@ -234,7 +234,7 @@ const AuthorityIssueDescription = () => {
                 {issue.resolvedPhoto ? (
                   <>
                     <img
-                      src={urlFor(issue.resolvedPhoto)}
+                      src={`${import.meta.env.VITE_API_URL}${issue.resolvedPhoto}`}
                       alt="Resolved"
                       className="w-full h-48 object-cover rounded-lg"
                     />

@@ -21,7 +21,7 @@ const AuthorityDashboard = () => {
     const fetchDashboard = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:5717/api/authority/dashboard`,
+          `${import.meta.env.VITE_API_URL}/api/authority/dashboard`,
           { headers: { token } }
         );
 
