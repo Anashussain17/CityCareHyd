@@ -19,7 +19,7 @@ import AuthorityIssueDescription from "./pages/AdminPages/AuthorityIssueDescript
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/citycarehyd">
       <Routes>
         {/* Public routes */}
 
