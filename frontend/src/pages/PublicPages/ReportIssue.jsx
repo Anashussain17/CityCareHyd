@@ -61,7 +61,7 @@ function ReportIssue() {
           formData.append("longitude", location.longitude);
         }
 
-        await axios.post("http://localhost:5717/api/issues", formData, {
+        await axios.post(`${import.meta.env.VITE_API_URL}/api/issues`, formData, {
           headers: { "Content-Type": "multipart/form-data",token: localStorage.getItem("token"), },
         });
         setShowAlert({ type: "success", msg: "Report Submitted ✅" });

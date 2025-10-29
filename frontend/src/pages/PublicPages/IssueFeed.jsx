@@ -33,7 +33,7 @@ const IssueFeed = () => {
     const fetchIssues = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:5717/api/issues/constituency/${constituency}`,
+          `${import.meta.env.VITE_API_URL}/api/issues/constituency/${constituency}`,
           { headers: { token: localStorage.getItem("token") } }
         );
         setIssues(res.data.issues);
@@ -50,7 +50,7 @@ const IssueFeed = () => {
   const handleUpvote = async (issueId) => {
     try {
       const res = await axios.post(
-        `http://localhost:5717/api/issues/${issueId}/upvote`,
+        `${import.meta.env.VITE_API_URL}/api/issues/${issueId}/upvote`,
         {},
         { headers: { token: localStorage.getItem("token") } }
       );
@@ -194,7 +194,7 @@ const IssueFeed = () => {
               {/* Right: image */}
               {issue.imageUrl && (
                 <img
-                  src={`http://localhost:5717${issue.imageUrl}`}
+                  src={`${import.meta.env.VITE_API_URL}${issue.imageUrl}`}
                   alt="Issue"
                   className="mt-3 sm:mt-0 w-full sm:w-40 h-40 object-cover rounded-lg"
                 />

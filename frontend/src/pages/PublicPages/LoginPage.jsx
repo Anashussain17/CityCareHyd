@@ -2,9 +2,11 @@
 
 import { useState,useEffect } from "react";
 import { useNavigate,useLocation } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import logo from "../../assets/logo.png";
 import Alert from "../../components/Alert";
+
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -17,9 +19,20 @@ export default function LoginPage() {
 
   useEffect(() => {
 
-    if (localStorage.getItem("token")) {
-      navigate("/constituencies", { replace: true });
+     const token = localStorage.getItem("token");
+  if (token) {
+    try {
+      const decoded = jwtDecode(token);
+      if (decoded.isAdmin) {
+        navigate("/authority/dashboard", { replace: true });
+      } else {
+        navigate("/constituencies", { replace: true });
+      }
+    } catch (err) {
+      console.error("Invalid token:", err);
+      localStorage.removeItem("token"); 
     }
+  }
 
   
     const params = new URLSearchParams(location.search);
@@ -32,8 +45,8 @@ export default function LoginPage() {
   e.preventDefault();
   try {
     const endpoint = isSignup
-      ? "http://localhost:5717/api/auth/signup"
-      : "http://localhost:5717/api/auth/login";
+      ? `${import.meta.env.VITE_API_URL}/api/auth/signup`
+      : `${import.meta.env.VITE_API_URL}/api/auth/login`;
 
     const payload = isSignup
       ? { email, password, confirmPassword }
