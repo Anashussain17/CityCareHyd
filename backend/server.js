@@ -29,6 +29,10 @@ app.use("/api/auth", authRoutes);
 app.use("/api/issues", issueRoutes);
 app.use("/api/authority", authorityRoutes);
 
+app.get("/", (req, res) => {
+  res.status(200).send("CityCare backend is running smoothly 🚀");
+});
+
 app.listen(PORT,()=>{
     console.log(`Listening to Port ${PORT}✅`);
 })
