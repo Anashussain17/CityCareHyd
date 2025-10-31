@@ -2,7 +2,7 @@
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FaMapMarkerAlt, FaUsers, FaShieldAlt } from "react-icons/fa";
-import { Link } from "react-scroll";
+// import { Link } from "react-scroll";
 import LandingLogo from "../../assets/LandingLogo.png";
 
 export default function LandingPage() {
@@ -12,26 +12,16 @@ export default function LandingPage() {
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-green-50 via-white to-green-100">
       
      
-      <nav className="w-full flex justify-between items-center px-4 sm:px-8 md:px-16 py-3 md:py-4 shadow-sm bg-white/90 backdrop-blur-lg">
-        <h1 className="text-xl sm:text-1xl md:text-3xl font-bold text-green-700 tracking-tight">
-          CityCare <span className="text-green-500">Hyd</span>
-        </h1>
-
-        {/* Desktop Menu */}
-        <ul className="hidden md:flex gap-8 text-gray-600 font-medium">
-          <li className="hover:text-green-600 transition cursor-pointer list-none">
-            <Link to="features" smooth={true} duration={500}>
-              Features
-            </Link>
-          </li>
-          <li className="hover:text-green-600 transition list-none cursor-pointer">
-            About
-          </li>
-          <li className="hover:text-green-600 transition list-none cursor-pointer">
-            Contact
-          </li>
-        </ul>
-
+      <nav className="w-full flex justify-between items-center px-4 sm:px-8 md:px-16 py-1 md:py-4 shadow-sm bg-white/90 backdrop-blur-lg">
+      <h1 className=" font-extrabold   leading-tight select-none">
+  <span className="font-[Montserrat]  block text-[1.8rem] md:text-[1.6rem] sm:text-[1.4rem] text-black">
+    Report
+  </span>
+  <hr className="my-0" />
+  <span className="font-[Montserrat] block text-[2rem] md:text-[1.8rem] sm:text-[1.6rem] text-green-600 tracking-[0.13rem]">
+    M L A
+  </span>
+</h1>
         {/* Auth Buttons */}
         <div className="flex gap-2 sm:gap-3">
           <button
@@ -64,7 +54,7 @@ export default function LandingPage() {
           </h2>
           <p className="text-gray-600 text-base sm:text-lg mb-6 max-w-md mx-auto md:mx-0">
             Report issues like potholes, garbage, or water supply disruptions
-            directly through CityCare Hyd. Your concern will reach local
+            directly through Report MLA. Your concern will reach local
             authorities faster than ever!
           </p>
 
@@ -133,7 +123,7 @@ export default function LandingPage() {
 
    
       <footer className="w-full text-center py-5 sm:py-6 bg-green-700 text-white text-xs sm:text-sm mt-auto">
-        © {new Date().getFullYear()} CityCare Hyd | Developed by Anas Hussain
+        © {new Date().getFullYear()} Report MLA | Developed by Anas Hussain
       </footer>
     </div>
   );

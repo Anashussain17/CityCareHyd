@@ -80,7 +80,7 @@ export default function LoginPage() {
   return (
     <div className="flex flex-col items-center justify-center h-screen bg-gradient-to-br from-green-100 via-white to-green-200">
       
-      <div className="flex flex-col items-center mb-6">
+      <div className="flex flex-col items-center mb-3">
         <div>
           <img
             src={logo}
@@ -88,9 +88,15 @@ export default function LoginPage() {
             className="w-16 h-16 object-contain bg-green-600 rounded-circle"
           />
         </div>
-        <h1 className="text-5xl md:text-6xl font-extrabold text-green-700 mb-4">
-          CityCare <span className="text-green-500">Hyd</span>
-        </h1>
+        <h1 className=" font-extrabold   leading-tight select-none">
+  <span className="font-[Montserrat]  block text-[1.8rem] md:text-[1.6rem] sm:text-[1.4rem] text-black">
+    Report
+  </span>
+  <hr className="my-0" />
+  <span className="font-[Montserrat] block text-[2rem] md:text-[1.8rem] sm:text-[1.6rem] text-green-600 tracking-[0.13rem]">
+    M L A
+  </span>
+</h1>
       </div>
 
       <div className="bg-white p-8 rounded-lg shadow-md w-96">

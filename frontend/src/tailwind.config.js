@@ -5,7 +5,9 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}", // include all React files
   ],
   theme: {
-    extend: {},
+    extend: {fontFamily: {
+      poppins: ['Poppins', 'sans-serif'],
+    },},
   },
   plugins: [],
 }
