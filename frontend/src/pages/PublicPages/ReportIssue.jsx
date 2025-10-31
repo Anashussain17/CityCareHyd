@@ -127,7 +127,9 @@ function ReportIssue() {
 
         {/* Upload Photo */}
         <div className="flex flex-col">
-          <label className="block text-sm font-semibold mb-2">Add Photo</label>
+          <label className="block text-sm font-semibold mb-2">Add Photo <br /><span className="text-xs text-red-400 italic">
+  Please enable your location first
+</span></label>
           <label
             htmlFor="file-upload"
             className="flex flex-row items-center justify-center border-2 border-dashed border-green-500 rounded-lg h-40 cursor-pointer bg-green-50 hover:bg-green-100 transition"
@@ -209,3 +211,5 @@ function ReportIssue() {
 }
 
 export default ReportIssue;
+
+

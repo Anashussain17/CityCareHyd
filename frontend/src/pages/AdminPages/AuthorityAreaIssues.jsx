@@ -14,11 +14,11 @@ const AuthorityAreaIssues = () => {
   const { areaName } = useParams();
   const navigate = useNavigate();
   const [issues, setIssues] = useState([]);
-  const [filteredIssues, setFilteredIssues] = useState([]); // ✅ for filtered view
+  const [filteredIssues, setFilteredIssues] = useState([]); //  for filtered view
   const [loading, setLoading] = useState(true);
   const [pendingCount, setPendingCount] = useState(0);
   const [resolvedCount, setResolvedCount] = useState(0);
-  const [filter, setFilter] = useState("All"); // ✅ current active filter
+  const [filter, setFilter] = useState("All"); // current active filter
 
   useEffect(() => {
     const fetchAreaIssues = async () => {
@@ -54,7 +54,7 @@ const AuthorityAreaIssues = () => {
     navigate("/login");
   };
 
-  // ✅ Filter Logic
+  // Filter Logic
   const handleFilterChange = (status) => {
     setFilter(status);
     if (status === "All") {

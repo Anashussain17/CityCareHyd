@@ -38,17 +38,19 @@ router.post("/login", async (req, res) => {
     const { email, password } = req.body;
     
     const user = await User.findOne({ email });
-    if (!user) return res.status(400).json({ message: "Invalid credentials❌" });
+    if (!user){
+      console.log("❌ No account found for:", email);
+      return res.status(404).json({ message: "No account found with this email.❌" });} 
 
     const isMatch = await bcrypt.compare(password, user.passwordHash);
-    if (!isMatch) return res.status(400).json({ message: "Invalid credentials❌" });
+    if (!isMatch) return res.status(401).json({ message: "Incorrect password ❌. Please try again." });
 if(adminEmails.includes(user.email)){
   user.isAdmin=true
   await user.save()
 } 
-   // ✅ Use environment variable
+   //token
     const token = jwt.sign({ userId: user._id, email: user.email, isAdmin:user.isAdmin }, process.env.JWT_SECRET, {
-      expiresIn: "1h",
+      expiresIn: "2h",
     });
 
     res.json({ message: "Login successful✅", token:token,isAdmin:user.isAdmin });
