@@ -48,15 +48,16 @@ export default function LandingPage() {
           transition={{ duration: 0.8 }}
           className="text-center md:text-left md:w-1/2"
         >
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-green-700 leading-tight mb-4">
-            Together, Let’s Make <br />
-            <span className="text-green-500">Hyderabad Cleaner & Safer!</span>
-          </h2>
-          <p className="text-gray-600 text-base sm:text-lg mb-6 max-w-md mx-auto md:mx-0">
-            Report issues like potholes, garbage, or water supply disruptions
-            directly through Report MLA. Your concern will reach local
-            authorities faster than ever!
-          </p>
+         <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-green-700 leading-tight mb-4">
+  Bridging Citizens, <br />
+  <span className="text-green-500">Leaders & Local Bodies.</span>
+</h2>
+<p className="text-gray-600 text-base sm:text-lg mb-6 max-w-md mx-auto md:mx-0">
+  ReportMLA connects people, MLAs, and civic authorities to create a transparent
+  system where every issue is tracked until it is resolved.
+</p>
+
+
 
           <div className="flex flex-col sm:flex-row justify-center md:justify-center gap-3 sm:gap-4">
             <button
@@ -89,41 +90,47 @@ export default function LandingPage() {
         </motion.div>
       </div>
 
-      
-      <section id="features" className="py-12 sm:py-16 bg-white w-full">
-        <h3 className="text-center text-2xl sm:text-3xl font-bold text-green-700 mb-6">
-          Key Features
-        </h3>
-        <div className="flex flex-wrap justify-center gap-8 sm:gap-10 text-green-700 px-4">
-          <div className="flex flex-col items-center max-w-[200px] sm:max-w-[220px]">
-            <FaMapMarkerAlt className="text-3xl sm:text-4xl mb-3" />
-            <h4 className="font-semibold text-lg mb-1">Report Issues</h4>
-            <p className="text-gray-600 text-sm text-center">
-              Easily upload images and auto-fetch location to report civic
-              problems.
-            </p>
-          </div>
-          <div className="flex flex-col items-center max-w-[240px] sm:max-w-[280px]">
-            <FaUsers className="text-3xl sm:text-4xl mb-3" />
-            <h4 className="font-semibold text-lg mb-1">Community Driven</h4>
-            <p className="text-gray-600 text-sm text-center">
-              Citizens unite to bring transparency and accountability to the
-              system.
-            </p>
-          </div>
-          <div className="flex flex-col items-center max-w-[200px] sm:max-w-[220px]">
-            <FaShieldAlt className="text-3xl sm:text-4xl mb-3" />
-            <h4 className="font-semibold text-lg mb-1">Verified Issues</h4>
-            <p className="text-gray-600 text-sm text-center">
-              Ensures every report is validated and visible to local authorities.
-            </p>
-          </div>
-        </div>
-      </section>
+     <section id="features" className="py-12 sm:py-16 bg-white w-full">
+  <h3 className="text-center text-2xl sm:text-3xl font-bold text-green-700 mb-4">
+    Key Features
+  </h3>
+
+  <div className="flex flex-wrap justify-center gap-8 sm:gap-10 text-green-700 px-4">
+
+    <div className="flex flex-col items-center max-w-[200px] sm:max-w-[220px]">
+      <FaMapMarkerAlt className="text-3xl sm:text-4xl mb-3" />
+      <h4 className="font-semibold text-lg mb-1">Report Local Issues</h4>
+      <p className="text-gray-600 text-sm text-center">
+        Citizens can report civic problems like potholes, garbage, or drainage
+        issues with photos and location details.
+      </p>
+    </div>
+
+    <div className="flex flex-col items-center max-w-[240px] sm:max-w-[280px]">
+      <FaUsers className="text-3xl sm:text-4xl mb-3" />
+      <h4 className="font-semibold text-lg mb-1">MLA Insights</h4>
+      <p className="text-gray-600 text-sm text-center">
+        MLAs can view all issues reported within their constituency to track
+        areas needing attention and coordinate with GHMC officials.
+      </p>
+    </div>
+
+    <div className="flex flex-col items-center max-w-[300px] sm:max-w-[220px]">
+      <FaShieldAlt className="text-3xl sm:text-4xl mb-3" />
+      <h4 className="font-semibold text-lg mb-1">Live Issue Status</h4>
+      <p className="text-gray-600 text-sm text-center">
+        Every issue remains visible until marked resolved by the concerned
+        authority, ensuring accountability at every level.
+      </p>
+    </div>
+
+  </div>
+</section>
+
 
    
       <footer className="w-full text-center py-5 sm:py-6 bg-green-700 text-white text-xs sm:text-sm mt-auto">
-        © {new Date().getFullYear()} Report MLA | Developed by Anas Hussain
+        © {new Date().getFullYear()} ReportMLA - Empowering Citizens. Enabling Action. <br /> Developed by Anas Hussain
       </footer>
     </div>
   );
