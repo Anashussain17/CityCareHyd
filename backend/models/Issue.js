@@ -25,9 +25,10 @@ const issueSchema = new mongoose.Schema(
       default: "Pending",
     },
     createdBy: { type: String, required: true },
+    reportedByEmail: { type: String, required: true },
     comments: [
       {
-        name: { type: String, default: "Anonymous" },
+        name: { type: String, default: "Citizen" },
         text: String,
         time: { type: Date, default: Date.now },
       },

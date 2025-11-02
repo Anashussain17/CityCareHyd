@@ -40,7 +40,9 @@ router.post("/", authMiddleware,upload.single("image"), async (req, res) => {
         latitude: latitude ? parseFloat(latitude) : null,
         longitude: longitude ? parseFloat(longitude) : null,
       },
-      createdBy: "Anonymous User", 
+      createdBy: "Citizen",
+     
+reportedByEmail: req.user.email, 
     });
 
     await newIssue.save();
@@ -135,7 +137,7 @@ router.post("/:id/comment", async (req, res) => {
     }
 
     const newComment = {
-      name: "Anonymous User", 
+      name: issue.createdBy, 
       text,
       time: new Date(),
     };
