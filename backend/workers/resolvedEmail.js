@@ -1,15 +1,13 @@
-
-// workers/sendEmail.js
 import { Resend } from "resend";
 import dotenv from "dotenv";
 dotenv.config();
 
 const resend = new Resend(process.env.apiKey);
 
-async function sendEmail(emailData) {
+async function resolvedEmail(emailData) {
   try {
     const { data, error } = await resend.emails.send({
-      from: "verification@reportmla.com",
+      from: "updates@reportmla.com",
       to: emailData.to,
       subject: emailData.subject,
       html: emailData.body,
@@ -29,4 +27,4 @@ async function sendEmail(emailData) {
   }
 }
 
-export default sendEmail;
+export default resolvedEmail;

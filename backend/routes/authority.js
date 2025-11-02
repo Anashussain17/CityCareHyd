@@ -3,6 +3,7 @@ import express from "express";
 import multer from "multer";
 import path from "path";
 import Issue from "../models/Issue.js";
+import resolvedEmail from "../workers/resolvedEmail.js";
 import authMiddleware from "../middleware/authMiddleware.js";
 
 const router = express.Router();
@@ -15,7 +16,7 @@ const resolvedStorage = multer.diskStorage({
 });
 const resolvedUpload = multer({ storage: resolvedStorage });
 
-// ---------- DASHBOARD ----------
+// DASHBOARD 
 router.get("/dashboard", authMiddleware, async (req, res) => {
   try {
     const issues = await Issue.find().lean();
@@ -56,7 +57,7 @@ router.get("/dashboard", authMiddleware, async (req, res) => {
   }
 });
 
-// ---------- AREA ISSUES (with counts) ----------
+// AREA ISSUES (with counts)
 router.get("/area/:areaName", authMiddleware, async (req, res) => {
   try {
     const { areaName } = req.params;
@@ -80,7 +81,7 @@ router.get("/area/:areaName", authMiddleware, async (req, res) => {
   }
 });
 
-// ---------- ISSUE DETAILS FOR AUTHORITY ----------
+// ISSUE DETAILS FOR AUTHORITY 
 router.get("/issue/:id", authMiddleware, async (req, res) => {
   try {
     const { id } = req.params;
@@ -94,7 +95,7 @@ router.get("/issue/:id", authMiddleware, async (req, res) => {
   }
 });
 
-// ---------- AUTHORITY COMMENT on ISSUE ----------
+// AUTHORITY COMMENT on ISSUE 
 router.post("/issue/:id/comment", authMiddleware, async (req, res) => {
   try {
     const { id } = req.params;
@@ -120,7 +121,7 @@ router.post("/issue/:id/comment", authMiddleware, async (req, res) => {
   }
 });
 
-// ---------- RESOLVE: Upload resolved proof photo ----------
+// RESOLVE: Upload resolved proof photo 
 router.post("/issue/:id/resolve", authMiddleware, resolvedUpload.single("resolvedPhoto"), async (req, res) => {
   try {
     const { id } = req.params;
@@ -131,7 +132,32 @@ router.post("/issue/:id/resolve", authMiddleware, resolvedUpload.single("resolve
 
     issue.resolvedPhoto = `/resolveduploads/${req.file.filename}`;
     issue.status = "Resolved";
+     
+    
     await issue.save();
+
+    
+      await resolvedEmail({
+        to: issue.reportedByEmail,
+        subject: "✅ Your Reported Issue Has Been Resolved!",
+        body: `
+          <p>Hello,</p>
+          <p>Good news! The issue you reported has been successfully <b>resolved</b> 🎉</p>
+          
+          <p><b>Issue:</b> ${issue.title}</p>
+          <p><b>Location:</b> ${issue.constituency}</p>
+          <p><b>Status:</b> Resolved ✅</p>
+          
+          <p>Here is the proof of resolution:</p>
+          <img src="http://localhost:5717${issue.resolvedPhoto}" alt="Resolved Photo" style="max-width:400px; border-radius:8px;"/>
+          
+          <br/><br/>
+          <p>Thank you for helping improve our city!</p>
+          <b>ReportMLA Team</b>
+        `
+      });
+    
+
 
     res.json({ success: true, url: issue.resolvedPhoto });
   } catch (err) {
