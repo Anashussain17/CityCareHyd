@@ -149,7 +149,7 @@ router.post("/issue/:id/resolve", authMiddleware, resolvedUpload.single("resolve
           <p><b>Status:</b> Resolved ✅</p>
           
           <p>Here is the proof of resolution:</p>
-          <img src="https://reportmla.com${issue.resolvedPhoto}" alt="Resolved Photo" style="max-width:400px; border-radius:8px;"/>
+          <img src="https://citycarehyd.onrender.com${issue.resolvedPhoto}" alt="Resolved Photo" style="max-width:400px; border-radius:8px;"/>
           
           <br/><br/>
           <p>Thank you for helping improve our city!</p>
