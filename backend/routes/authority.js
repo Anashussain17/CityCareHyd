@@ -1,10 +1,13 @@
 // routes/authority.js
 import express from "express";
 import multer from "multer";
+import dotenv from"dotenv"
 import path from "path";
 import Issue from "../models/Issue.js";
 import resolvedEmail from "../workers/resolvedEmail.js";
 import authMiddleware from "../middleware/authMiddleware.js";
+
+dotenv.config()
 
 const router = express.Router();
 
@@ -135,8 +138,7 @@ router.post("/issue/:id/resolve", authMiddleware, resolvedUpload.single("resolve
      
     
     await issue.save();
-
-    
+    const URL=process.env.BASE_URL
       await resolvedEmail({
         to: issue.reportedByEmail,
         subject: "✅ Your Reported Issue Has Been Resolved!",
@@ -149,7 +151,7 @@ router.post("/issue/:id/resolve", authMiddleware, resolvedUpload.single("resolve
           <p><b>Status:</b> Resolved ✅</p>
           
           <p>Here is the proof of resolution:</p>
-          <img src="https://citycarehyd.onrender.com${issue.resolvedPhoto}" alt="Resolved Photo" style="max-width:400px; border-radius:8px;"/>
+          <img src="${URL}${issue.resolvedPhoto}" alt="Resolved Photo" style="max-width:400px; border-radius:8px;"/>
           
           <br/><br/>
           <p>Thank you for helping improve our city!</p>
