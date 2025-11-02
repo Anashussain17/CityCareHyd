@@ -41,7 +41,7 @@ router.post("/signup", async (req, res) => {
         Hello,<br/>
         Welcome to ReportMLA!<br/><br/>
         Please verify your email:<br/><br/>
-        <a href="http://localhost:5717/api/auth/verify/${emailToken}">
+        <a href="https://reportmla.com/api/auth/verify/${emailToken}">
           ✅ Verify Email
         </a><br/><br/>
         Thank you,<br/>
