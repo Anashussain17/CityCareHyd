@@ -3,7 +3,7 @@ import express from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
-import sendEmail from "../workers/sendEmail.js"
+// import sendEmail from "../workers/sendEmail.js"
 import dotenv from "dotenv"
 dotenv.config()
 const router = express.Router();
@@ -34,22 +34,22 @@ router.post("/signup", async (req, res) => {
     await newUser.save();
 
     // Send Email
-    sendEmail({
-      to: email,
-      subject: "ReportMLA - Email Confirmation",
-      body: `
-        Hello,<br/>
-        Welcome to ReportMLA!<br/><br/>
-        Please verify your email:<br/><br/>
-        <a href="https://reportmla.com/api/auth/verify/${emailToken}">
-          ✅ Verify Email
-        </a><br/><br/>
-        Thank you,<br/>
-        <b>ReportMLA Team</b>
-      `,
-    });
+    // sendEmail({
+    //   to: email,
+    //   subject: "ReportMLA - Email Confirmation",
+    //   body: `
+    //     Hello,<br/>
+    //     Welcome to ReportMLA!<br/><br/>
+    //     Please verify your email:<br/><br/>
+    //     <a href="https://reportmla.com/api/auth/verify/${emailToken}">
+    //       ✅ Verify Email
+    //     </a><br/><br/>
+    //     Thank you,<br/>
+    //     <b>ReportMLA Team</b>
+    //   `,
+    // });
 
-    res.json({ message: "Signup successful! Please verify your email 📧" });
+    res.json({ message: "Signup successful!✅" });
 
   } catch (err) {
     console.log(err); 
@@ -58,24 +58,24 @@ router.post("/signup", async (req, res) => {
 });
 
 
-// Verify Email
-router.get("/verify/:token", async (req, res) => {
-  try {
-    const user = await User.findOne({ verifyToken: req.params.token });
+// // Verify Email
+// router.get("/verify/:token", async (req, res) => {
+//   try {
+//     const user = await User.findOne({ verifyToken: req.params.token });
 
-    if (!user) {
-      return res.status(400).send("<h3>Invalid or expired token ❌</h3>");
-    }
+//     if (!user) {
+//       return res.status(400).send("<h3>Invalid or expired token ❌</h3>");
+//     }
 
-    user.isVerified = true;
-    user.verifyToken = null;
-    await user.save();
+//     user.isVerified = true;
+//     user.verifyToken = null;
+//     await user.save();
 
-    res.send("<h3>Email Verified Successfully ✅ You can now login.</h3>");
-  } catch (err) {
-    res.status(500).send("Server Error");
-  }
-});
+//     res.send("<h3>Email Verified Successfully ✅ You can now login.</h3>");
+//   } catch (err) {
+//     res.status(500).send("Server Error");
+//   }
+// });
 
 
 
@@ -88,10 +88,11 @@ router.post("/login", async (req, res) => {
     const user = await User.findOne({ email });
     if (!user){
       console.log("❌ No account found for:", email);
-      return res.status(404).json({ message: "No account found with this email.❌" });} 
-    if (!user.isVerified) {
-  return res.status(401).json({ message: "Please verify your email before logging in 📧" });
-}
+      return res.status(404).json({ message: "No account found with this email.❌" });
+    } 
+//     if (!user.isVerified) {
+//   return res.status(401).json({ message: "Please verify your email before logging in 📧" });
+// }
 
 
     const isMatch = await bcrypt.compare(password, user.passwordHash);
