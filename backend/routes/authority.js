@@ -133,12 +133,13 @@ router.post("/issue/:id/resolve", authMiddleware, resolvedUpload.single("resolve
 
     if (!req.file) return res.status(400).json({ message: "No file uploaded" });
 
-    issue.resolvedPhoto = `/resolveduploads/${req.file.filename}`;
-    issue.status = "Resolved";
+   issue.resolvedPhoto = `/resolveduploads/${req.file.filename}`;
+   issue.status = "Resolved";
      
     
     await issue.save();
-    const URL=process.env.BASE_URL
+  
+
       await resolvedEmail({
         to: issue.reportedByEmail,
         subject: "✅ Your Reported Issue Has Been Resolved!",
@@ -148,11 +149,7 @@ router.post("/issue/:id/resolve", authMiddleware, resolvedUpload.single("resolve
           
           <p><b>Issue:</b> ${issue.title}</p>
           <p><b>Location:</b> ${issue.constituency}</p>
-          <p><b>Status:</b> Resolved ✅</p>
-          
-          <p>Here is the proof of resolution:</p>
-          <img src="${URL}${issue.resolvedPhoto}" alt="Resolved Photo" style="max-width:400px; border-radius:8px;"/>
-          
+          <p><b>Status:</b> Resolved ✅</p>    
           <br/><br/>
           <p>Thank you for helping improve our city!</p>
           <b>ReportMLA Team</b>
