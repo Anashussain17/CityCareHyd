@@ -26,7 +26,12 @@ const upload = multer({ storage });
 router.post("/", authMiddleware,upload.single("image"), async (req, res) => {
   try {
     const { constituency, title, description, category, latitude, longitude } = req.body;
-
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: "Image is required to report an issue",
+      });
+    }
     const newIssue = new Issue({
       constituency,
       title,
@@ -154,3 +159,4 @@ router.post("/:id/comment", async (req, res) => {
 
 
 export default router;
+
