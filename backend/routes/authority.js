@@ -6,6 +6,9 @@ import path from "path";
 import Issue from "../models/Issue.js";
 import resolvedEmail from "../workers/resolvedEmail.js";
 import authMiddleware from "../middleware/authMiddleware.js";
+import { uploadMemory } from "../utils/multerCloudinary.js";
+import { uploadBufferToCloudinary } from "../utils/uploadToCloudinary.js";
+
 
 dotenv.config()
 
@@ -125,7 +128,8 @@ router.post("/issue/:id/comment", authMiddleware, async (req, res) => {
 });
 
 // RESOLVE: Upload resolved proof photo 
-router.post("/issue/:id/resolve", authMiddleware, resolvedUpload.single("resolvedPhoto"), async (req, res) => {
+router.post("/issue/:id/resolve", authMiddleware, uploadMemory.single("resolvedPhoto")
+, async (req, res) => {
   try {
     const { id } = req.params;
     const issue = await Issue.findById(id);
@@ -133,10 +137,13 @@ router.post("/issue/:id/resolve", authMiddleware, resolvedUpload.single("resolve
 
     if (!req.file) return res.status(400).json({ message: "No file uploaded" });
 
-   issue.resolvedPhoto = `/resolveduploads/${req.file.filename}`;
-   issue.status = "Resolved";
+  //  issue.resolvedPhoto = `/resolveduploads/${req.file.filename}`;
+  //  issue.status = "Resolved";
      
-    
+   // Upload to Cloudinary
+    const result = await uploadBufferToCloudinary(req.file.buffer, "citycare/resolved");
+    issue.resolvedPhoto = result.secure_url;
+    issue.status = "Resolved";  
     await issue.save();
   
 

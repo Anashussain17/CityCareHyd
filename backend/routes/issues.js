@@ -10,6 +10,9 @@ import Issue from "../models/Issue.js";
 import authMiddleware from "../middleware/authMiddleware.js";
 
 const router = express.Router();
+import { uploadMemory } from "../utils/multerCloudinary.js";
+import { uploadBufferToCloudinary } from "../utils/uploadToCloudinary.js";
+
 
 // Configure multer for image uploads
 const storage = multer.diskStorage({
@@ -26,7 +29,14 @@ const upload = multer({ storage });
 router.post("/", authMiddleware,upload.single("image"), async (req, res) => {
   try {
     const { constituency, title, description, category, latitude, longitude } = req.body;
+    
+    let imageUrl = null;
 
+    // If image uploaded, push to Cloudinary
+    if (req.file) {
+      const result = await uploadBufferToCloudinary(req.file.buffer, "citycare/issues");
+      imageUrl = result.secure_url;
+    }
     const newIssue = new Issue({
       constituency,
       title,

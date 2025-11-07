@@ -88,7 +88,14 @@ function ReportIssue() {
     formData.append("description", description);
     formData.append("category", category);
     formData.append("constituency", constituency);
-    if (image) formData.append("image", image);
+    if (image){ formData.append("image", image);}
+    else{
+        setShowAlert({
+      type: "danger",
+      msg: "📸 Image required! Please take or upload a photo of the issue to proceed.",
+    });
+    return;
+    }
     formData.append("latitude", location.latitude);
     formData.append("longitude", location.longitude);
 
