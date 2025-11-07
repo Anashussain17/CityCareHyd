@@ -106,7 +106,7 @@ export default function IssueDescription() {
         <div className="grid grid-cols-1 md:grid-cols-2">
           <div>
             <img
-              src={`${import.meta.env.VITE_API_URL}${issue.imageUrl}`}
+              src={`${issue.imageUrl}`}
               alt={issue.title}
               className="w-full h-60 sm:h-72 md:h-80 object-cover"
             />

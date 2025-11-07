@@ -194,7 +194,7 @@ const IssueFeed = () => {
               {/* Right: image */}
               {issue.imageUrl && (
                 <img
-                  src={`${import.meta.env.VITE_API_URL}${issue.imageUrl}`}
+                  src={`${issue.imageUrl}`}
                   alt="Issue"
                   className="mt-3 sm:mt-0 w-full sm:w-40 h-40 object-cover rounded-lg"
                 />

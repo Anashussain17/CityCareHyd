@@ -19,10 +19,10 @@ const PORT=process.env.PORT
 app.use(cors());
 app.use(express.json());
 
-// Serve uploaded images
-app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
-// serve resolved uploads
-app.use("/resolveduploads", express.static(path.join(process.cwd(), "resolveduploads")));
+// // Serve uploaded images
+// app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
+// // serve resolved uploads
+// app.use("/resolveduploads", express.static(path.join(process.cwd(), "resolveduploads")));
 
 // Routes
 app.use("/api/auth", authRoutes);
