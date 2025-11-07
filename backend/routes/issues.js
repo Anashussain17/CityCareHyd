@@ -36,6 +36,11 @@ router.post("/", authMiddleware,upload.single("image"), async (req, res) => {
     if (req.file) {
       const result = await uploadBufferToCloudinary(req.file.buffer, "citycare/issues");
       imageUrl = result.secure_url;
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: "Image is required to report an issue",
+      });
     }
     const newIssue = new Issue({
       constituency,
@@ -164,3 +169,4 @@ router.post("/:id/comment", async (req, res) => {
 
 
 export default router;
+
