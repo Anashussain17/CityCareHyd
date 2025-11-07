@@ -1,7 +1,7 @@
 // routes/issues.js
 import express from "express";
-import multer from "multer";
-import path from "path";
+// import multer from "multer";
+// import path from "path";
 
 //Models
 import Issue from "../models/Issue.js";
@@ -15,54 +15,101 @@ import { uploadBufferToCloudinary } from "../utils/uploadToCloudinary.js";
 
 
 // Configure multer for image uploads
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/"); 
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname));
-  },
-});
-const upload = multer({ storage });
+// const storage = multer.diskStorage({
+//   destination: (req, file, cb) => {
+//     cb(null, "uploads/"); 
+//   },
+//   filename: (req, file, cb) => {
+//     cb(null, Date.now() + path.extname(file.originalname));
+//   },
+// });
+// const upload = multer({ storage });
 
 // Create a new issue
-router.post("/", authMiddleware,upload.single("image"), async (req, res) => {
+// router.post("/", authMiddleware,upload.single("image"), async (req, res) => {
+//   try {
+//     const { constituency, title, description, category, latitude, longitude } = req.body;
+    
+//     let imageUrl = null;
+
+//     // If image uploaded, push to Cloudinary
+//     if (req.file) {
+//       const result = await uploadBufferToCloudinary(req.file.buffer, "citycare/issues");
+//       imageUrl = result.secure_url;
+//     if (!req.file) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Image is required to report an issue",
+//       });
+//     }
+//     const newIssue = new Issue({
+//       constituency,
+//       title,
+//       description,
+//       category,
+//       imageUrl: req.file ? `/uploads/${req.file.filename}` : null,
+      
+//       location: {
+//         latitude: latitude ? parseFloat(latitude) : null,
+//         longitude: longitude ? parseFloat(longitude) : null,
+//       },
+//       createdBy: "Citizen",
+     
+// reportedByEmail: req.user.email, 
+//     });
+
+//     await newIssue.save();
+//     res.status(201).json({ success: true, message: "Issue reported successfully", issue: newIssue });
+//   } catch (error) {
+//     console.error("Error creating issue:", error);
+//     res.status(500).json({ success: false, message: "Server Error" });
+//   }
+// });
+
+// Create a new issue
+router.post("/", authMiddleware, uploadMemory.single("image"), async (req, res) => {
   try {
     const { constituency, title, description, category, latitude, longitude } = req.body;
-    
+
+    if (!constituency || !title || !description || !category || !latitude || !longitude) {
+      return res.status(400).json({ message: "All fields are required!" });
+    }
+
     let imageUrl = null;
 
-    // If image uploaded, push to Cloudinary
+    // If image exists → upload to Cloudinary
     if (req.file) {
-      const result = await uploadBufferToCloudinary(req.file.buffer, "citycare/issues");
-      imageUrl = result.secure_url;
-    if (!req.file) {
-      return res.status(400).json({
-        success: false,
-        message: "Image is required to report an issue",
-      });
+      try {
+        const uploadedImage = await uploadToCloudinary(req.file.buffer, "citycare/issues");
+        imageUrl = uploadedImage.secure_url;
+      } catch (error) {
+        console.error("❌ Cloudinary Upload Failed:", error);
+        return res.status(500).json({ message: "Image upload failed" });
+      }
     }
+
     const newIssue = new Issue({
       constituency,
       title,
       description,
       category,
-      imageUrl: req.file ? `/uploads/${req.file.filename}` : null,
-      
+      imageUrl,
       location: {
-        latitude: latitude ? parseFloat(latitude) : null,
-        longitude: longitude ? parseFloat(longitude) : null,
+        latitude: parseFloat(latitude),
+        longitude: parseFloat(longitude),
       },
-      createdBy: "Citizen",
-     
-reportedByEmail: req.user.email, 
+      reportedBy: req.user.id,
     });
 
     await newIssue.save();
-    res.status(201).json({ success: true, message: "Issue reported successfully", issue: newIssue });
+
+    res.status(201).json({
+      message: "Issue reported successfully",
+      issue: newIssue,
+    });
   } catch (error) {
-    console.error("Error creating issue:", error);
-    res.status(500).json({ success: false, message: "Server Error" });
+    console.error("❌ Error reporting issue:", error);
+    res.status(500).json({ message: "Server error" });
   }
 });
 
@@ -169,4 +216,5 @@ router.post("/:id/comment", async (req, res) => {
 
 
 export default router;
+
 
