@@ -29,7 +29,7 @@ Each report is made visible to local authorities who can respond, upload resolut
 **Hosting:**
 
 * Backend → [Render](https://render.com)
-* Frontend → cPanel (under your domain `anashussain.xyz/citycarehyd`)
+* Frontend → cPanel (under your domain)
 
 ---
 
