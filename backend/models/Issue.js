@@ -17,8 +17,7 @@ const issueSchema = new mongoose.Schema(
     location: {
       latitude: { type: Number },
       longitude: { type: Number },
-    },
-    // include "In Progress" because some code checks for it
+    }, 
     status: {
       type: String,
       enum: ["Pending", "In Progress", "Resolved"],
@@ -39,3 +38,4 @@ const issueSchema = new mongoose.Schema(
 );
 
 export default mongoose.model("Issue", issueSchema);
+
