@@ -79,7 +79,6 @@ router.post("/signup", async (req, res) => {
 
 
 
-let adminEmails=["anas@anashussain.xyz"]
 // Login
 router.post("/login", async (req, res) => {
   try {
@@ -97,10 +96,6 @@ router.post("/login", async (req, res) => {
 
     const isMatch = await bcrypt.compare(password, user.passwordHash);
     if (!isMatch) return res.status(401).json({ message: "Incorrect password ❌. Please try again." });
-if(adminEmails.includes(user.email)){
-  user.isAdmin=true
-  await user.save()
-} 
    //token
     const token = jwt.sign({ userId: user._id, email: user.email, isAdmin:user.isAdmin }, process.env.JWT_SECRET, {
       expiresIn: "2h",

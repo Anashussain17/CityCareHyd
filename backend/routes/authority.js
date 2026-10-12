@@ -6,10 +6,14 @@ import path from "path";
 import Issue from "../models/Issue.js";
 import resolvedEmail from "../workers/resolvedEmail.js";
 import authMiddleware from "../middleware/authMiddleware.js";
+import requireAuthority from "../middleware/requireAuthority.js";
 
 dotenv.config()
 
 const router = express.Router();
+
+// Every route in this file is for authorities only: logged in AND isAdmin in the database.
+router.use(authMiddleware, requireAuthority);
 
 // Configure multer for resolved uploads (separate folder)
 const resolvedStorage = multer.diskStorage({
@@ -20,7 +24,7 @@ const resolvedStorage = multer.diskStorage({
 const resolvedUpload = multer({ storage: resolvedStorage });
 
 // DASHBOARD 
-router.get("/dashboard", authMiddleware, async (req, res) => {
+router.get("/dashboard", async (req, res) => {
   try {
     const issues = await Issue.find().lean();
 
@@ -61,7 +65,7 @@ router.get("/dashboard", authMiddleware, async (req, res) => {
 });
 
 // AREA ISSUES (with counts)
-router.get("/area/:areaName", authMiddleware, async (req, res) => {
+router.get("/area/:areaName", async (req, res) => {
   try {
     const { areaName } = req.params;
     const issues = await Issue.find({ constituency: areaName }).lean();
@@ -85,7 +89,7 @@ router.get("/area/:areaName", authMiddleware, async (req, res) => {
 });
 
 // ISSUE DETAILS FOR AUTHORITY 
-router.get("/issue/:id", authMiddleware, async (req, res) => {
+router.get("/issue/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const issue = await Issue.findById(id).lean();
@@ -99,7 +103,7 @@ router.get("/issue/:id", authMiddleware, async (req, res) => {
 });
 
 // AUTHORITY COMMENT on ISSUE 
-router.post("/issue/:id/comment", authMiddleware, async (req, res) => {
+router.post("/issue/:id/comment", async (req, res) => {
   try {
     const { id } = req.params;
     const { text } = req.body;
@@ -125,7 +129,7 @@ router.post("/issue/:id/comment", authMiddleware, async (req, res) => {
 });
 
 // RESOLVE: Upload resolved proof photo 
-router.post("/issue/:id/resolve", authMiddleware, resolvedUpload.single("resolvedPhoto"), async (req, res) => {
+router.post("/issue/:id/resolve", resolvedUpload.single("resolvedPhoto"), async (req, res) => {
   try {
     const { id } = req.params;
     const issue = await Issue.findById(id);
