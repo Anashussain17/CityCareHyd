@@ -1,12 +1,11 @@
 // routes/authority.js
 import express from "express";
-import multer from "multer";
 import dotenv from"dotenv"
-import path from "path";
 import Issue from "../models/Issue.js";
 import resolvedEmail from "../workers/resolvedEmail.js";
 import authMiddleware from "../middleware/authMiddleware.js";
 import requireAuthority from "../middleware/requireAuthority.js";
+import { acceptImage, saveImage } from "../utils/imageUpload.js";
 
 dotenv.config()
 
@@ -14,14 +13,6 @@ const router = express.Router();
 
 // Every route in this file is for authorities only: logged in AND isAdmin in the database.
 router.use(authMiddleware, requireAuthority);
-
-// Configure multer for resolved uploads (separate folder)
-const resolvedStorage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, "resolveduploads/"),
-  filename: (req, file, cb) =>
-    cb(null, Date.now() + path.extname(file.originalname)),
-});
-const resolvedUpload = multer({ storage: resolvedStorage });
 
 // DASHBOARD 
 router.get("/dashboard", async (req, res) => {
@@ -129,7 +120,7 @@ router.post("/issue/:id/comment", async (req, res) => {
 });
 
 // RESOLVE: Upload resolved proof photo 
-router.post("/issue/:id/resolve", resolvedUpload.single("resolvedPhoto"), async (req, res) => {
+router.post("/issue/:id/resolve", acceptImage("resolvedPhoto"), async (req, res) => {
   try {
     const { id } = req.params;
     const issue = await Issue.findById(id);
@@ -137,7 +128,7 @@ router.post("/issue/:id/resolve", resolvedUpload.single("resolvedPhoto"), async 
 
     if (!req.file) return res.status(400).json({ message: "No file uploaded" });
 
-   issue.resolvedPhoto = `/resolveduploads/${req.file.filename}`;
+   issue.resolvedPhoto = await saveImage(req.file, "resolved");
    issue.status = "Resolved";
      
     

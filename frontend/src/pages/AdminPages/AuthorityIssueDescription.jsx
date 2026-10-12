@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { imageUrl } from "../../utils/imageUrl";
 import { FaUserCircle } from "react-icons/fa";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -14,7 +15,6 @@ import {
 
 import Alert from "../../components/Alert";
 
-const BASE_URL = import.meta.env.VITE_BASE_URL || "http://localhost:5717";
 
 const AuthorityIssueDescription = () => {
   const { id } = useParams();
@@ -109,7 +109,7 @@ const AuthorityIssueDescription = () => {
         navigate("/login");
       }
       console.error("Error uploading resolved photo:", err);
-      setShowAlert({type:"danger",msg:"Failed to upload resolved photo❌"});
+      setShowAlert({type:"danger",msg: err.response?.data?.message || "Failed to upload resolved photo❌"});
       setTimeout(()=>{setShowAlert(null)},2000)
     } finally {
       setUploading(false);
@@ -130,10 +130,6 @@ const AuthorityIssueDescription = () => {
       </div>
     );
 
-  const urlFor = (path) => {
-    if (!path) return null;
-    return path.startsWith("http") ? path : `${BASE_URL}${path}`;
-  };
   const handleLogout = () => {
   localStorage.removeItem("token");
   navigate("/login");
@@ -218,7 +214,7 @@ const AuthorityIssueDescription = () => {
                 <div className="flex-1">
                   <p className="font-semibold text-gray-700 mb-2">Reported Photo</p>
                   <img
-                    src={`${import.meta.env.VITE_API_URL}${issue.imageUrl}`}
+                    src={imageUrl(issue.imageUrl)}
                     alt="Reported"
                     className="w-full h-48 object-cover rounded-lg"
                   />
@@ -234,7 +230,7 @@ const AuthorityIssueDescription = () => {
                 {issue.resolvedPhoto ? (
                   <>
                     <img
-                      src={`${import.meta.env.VITE_API_URL}${issue.resolvedPhoto}`}
+                      src={imageUrl(issue.resolvedPhoto)}
                       alt="Resolved"
                       className="w-full h-48 object-cover rounded-lg"
                     />

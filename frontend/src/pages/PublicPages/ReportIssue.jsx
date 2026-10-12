@@ -111,7 +111,7 @@ function ReportIssue() {
       navigate("/login");
     } else {
       console.error("Error reporting issue:", err);
-      setShowAlert({ type: "danger", msg: "Failed to submit report." });
+      setShowAlert({ type: "danger", msg: err.response?.data?.message || "Failed to submit report." });
     }
     setTimeout(() => setShowAlert(null), 3000);
   }

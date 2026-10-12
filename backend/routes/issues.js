@@ -1,38 +1,31 @@
 // routes/issues.js
 import express from "express";
-import multer from "multer";
-import path from "path";
 
 //Models
 import Issue from "../models/Issue.js";
 
 //Middleware
 import authMiddleware from "../middleware/authMiddleware.js";
+import { acceptImage, saveImage } from "../utils/imageUpload.js";
 
 const router = express.Router();
 
-// Configure multer for image uploads
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/"); 
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname));
-  },
-});
-const upload = multer({ storage });
-
 // Create a new issue
-router.post("/", authMiddleware,upload.single("image"), async (req, res) => {
+router.post("/", authMiddleware, acceptImage("image"), async (req, res) => {
   try {
     const { constituency, title, description, category, latitude, longitude } = req.body;
+
+    if (!req.file) {
+      return res.status(400).json({ success: false, message: "A photo of the issue is required" });
+    }
+    const imageUrl = await saveImage(req.file, "issues");
 
     const newIssue = new Issue({
       constituency,
       title,
       description,
       category,
-      imageUrl: req.file ? `/uploads/${req.file.filename}` : null,
+      imageUrl,
       
       location: {
         latitude: latitude ? parseFloat(latitude) : null,
