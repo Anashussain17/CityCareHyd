@@ -2,12 +2,13 @@ import { Resend } from "resend";
 import dotenv from "dotenv";
 dotenv.config();
 
-const resend = new Resend(process.env.apiKey);
+// RESEND_API_KEY (older deployments used "apiKey")
+const resend = new Resend(process.env.RESEND_API_KEY || process.env.apiKey);
 
 async function resolvedEmail(emailData) {
   try {
     const { data, error } = await resend.emails.send({
-      from: "updates@reportmla.com",
+      from: process.env.EMAIL_FROM || "ReportMLA <updates@anashussain.xyz>",
       to: emailData.to,
       subject: emailData.subject,
       html: emailData.body,
