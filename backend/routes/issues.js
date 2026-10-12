@@ -122,7 +122,7 @@ router.post("/:id/upvote", authMiddleware, async (req, res) => {
 
 
 // Add new comment
-router.post("/:id/comment", async (req, res) => {
+router.post("/:id/comment", authMiddleware, async (req, res) => {
   try {
     const { text } = req.body;
     if (!text || !text.trim()) {
@@ -135,7 +135,7 @@ router.post("/:id/comment", async (req, res) => {
     }
 
     const newComment = {
-      name: issue.createdBy, 
+      name: "Citizen",
       text,
       time: new Date(),
     };

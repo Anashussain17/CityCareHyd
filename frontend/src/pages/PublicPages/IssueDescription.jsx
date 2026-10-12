@@ -60,11 +60,17 @@ export default function IssueDescription() {
     try {
       const res = await axios.post(
         `${import.meta.env.VITE_API_URL}/api/issues/${id}/comment`,
-        { text: newComment }
+        { text: newComment },
+        { headers: { token: localStorage.getItem("token") } }
       );
       setComments([res.data.comment, ...comments]);
       setNewComment("");
     } catch (err) {
+      if (err.response && err.response.status === 401) {
+        localStorage.removeItem("token");
+        navigate("/login");
+        return;
+      }
       console.error(err);
     }
   };
