@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { imageUrl } from "../../utils/imageUrl";
 import {
   FaMapMarkerAlt,
   FaClock,
@@ -60,11 +61,17 @@ export default function IssueDescription() {
     try {
       const res = await axios.post(
         `${import.meta.env.VITE_API_URL}/api/issues/${id}/comment`,
-        { text: newComment }
+        { text: newComment },
+        { headers: { token: localStorage.getItem("token") } }
       );
       setComments([res.data.comment, ...comments]);
       setNewComment("");
     } catch (err) {
+      if (err.response && err.response.status === 401) {
+        localStorage.removeItem("token");
+        navigate("/login");
+        return;
+      }
       console.error(err);
     }
   };
@@ -106,7 +113,7 @@ export default function IssueDescription() {
         <div className="grid grid-cols-1 md:grid-cols-2">
           <div>
             <img
-              src={`${import.meta.env.VITE_API_URL}${issue.imageUrl}`}
+              src={imageUrl(issue.imageUrl)}
               alt={issue.title}
               className="w-full h-60 sm:h-72 md:h-80 object-cover"
             />
@@ -173,7 +180,7 @@ export default function IssueDescription() {
     Resolution Proof:
     </h3>
     <img
-      src={`${import.meta.env.VITE_API_URL}${issue.resolvedPhoto}`}
+      src={imageUrl(issue.resolvedPhoto)}
       alt="Resolved Issue"
       className="w-full h-64 sm:h-72 md:h-80 object-cover rounded-lg md:px-50 shadow-md border border-gray-200"
     />

@@ -3,13 +3,14 @@ import express from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
+import { validate, signupRules, loginRules } from "../middleware/validate.js";
 // import sendEmail from "../workers/sendEmail.js"
 import dotenv from "dotenv"
 dotenv.config()
 const router = express.Router();
 
 // Signup
-router.post("/signup", async (req, res) => {
+router.post("/signup", signupRules, validate, async (req, res) => {
   try {
     const { email, password, confirmPassword } = req.body;
 
@@ -79,9 +80,8 @@ router.post("/signup", async (req, res) => {
 
 
 
-let adminEmails=["anas@anashussain.xyz"]
 // Login
-router.post("/login", async (req, res) => {
+router.post("/login", loginRules, validate, async (req, res) => {
   try {
     const { email, password } = req.body;
     
@@ -97,10 +97,6 @@ router.post("/login", async (req, res) => {
 
     const isMatch = await bcrypt.compare(password, user.passwordHash);
     if (!isMatch) return res.status(401).json({ message: "Incorrect password ❌. Please try again." });
-if(adminEmails.includes(user.email)){
-  user.isAdmin=true
-  await user.save()
-} 
    //token
     const token = jwt.sign({ userId: user._id, email: user.email, isAdmin:user.isAdmin }, process.env.JWT_SECRET, {
       expiresIn: "2h",

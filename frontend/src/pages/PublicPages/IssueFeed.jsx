@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import { imageUrl } from "../../utils/imageUrl";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowLeft,
@@ -194,7 +195,7 @@ const IssueFeed = () => {
               {/* Right: image */}
               {issue.imageUrl && (
                 <img
-                  src={`${import.meta.env.VITE_API_URL}${issue.imageUrl}`}
+                  src={imageUrl(issue.imageUrl)}
                   alt="Issue"
                   className="mt-3 sm:mt-0 w-full sm:w-40 h-40 object-cover rounded-lg"
                 />

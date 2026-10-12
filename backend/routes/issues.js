@@ -1,38 +1,32 @@
 // routes/issues.js
 import express from "express";
-import multer from "multer";
-import path from "path";
 
 //Models
 import Issue from "../models/Issue.js";
 
 //Middleware
 import authMiddleware from "../middleware/authMiddleware.js";
+import { acceptImage, saveImage } from "../utils/imageUpload.js";
+import { validate, issueRules, commentRules, mongoIdParam } from "../middleware/validate.js";
 
 const router = express.Router();
 
-// Configure multer for image uploads
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/"); 
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname));
-  },
-});
-const upload = multer({ storage });
-
 // Create a new issue
-router.post("/", authMiddleware,upload.single("image"), async (req, res) => {
+router.post("/", authMiddleware, acceptImage("image"), issueRules, validate, async (req, res) => {
   try {
     const { constituency, title, description, category, latitude, longitude } = req.body;
+
+    if (!req.file) {
+      return res.status(400).json({ success: false, message: "A photo of the issue is required" });
+    }
+    const imageUrl = await saveImage(req.file, "issues");
 
     const newIssue = new Issue({
       constituency,
       title,
       description,
       category,
-      imageUrl: req.file ? `/uploads/${req.file.filename}` : null,
+      imageUrl,
       
       location: {
         latitude: latitude ? parseFloat(latitude) : null,
@@ -72,7 +66,7 @@ router.get("/counts",authMiddleware, async (req, res) => {
 });
 
 // Get issue by ID
-router.get("/:id", authMiddleware,async (req, res) => {
+router.get("/:id", authMiddleware, mongoIdParam, validate, async (req, res) => {
   try {
     const issue = await Issue.findById(req.params.id);
     if (!issue) return res.status(404).json({ message: "Issue not found" });
@@ -97,7 +91,7 @@ router.get("/constituency/:constituency",authMiddleware, async (req, res) => {
 });
 
 // Upvote an issue
-router.post("/:id/upvote", authMiddleware, async (req, res) => {
+router.post("/:id/upvote", authMiddleware, mongoIdParam, validate, async (req, res) => {
   try {
     const { id } = req.params;
     const userId = req.user.userId; // From token
@@ -122,7 +116,7 @@ router.post("/:id/upvote", authMiddleware, async (req, res) => {
 
 
 // Add new comment
-router.post("/:id/comment", async (req, res) => {
+router.post("/:id/comment", authMiddleware, mongoIdParam, commentRules, validate, async (req, res) => {
   try {
     const { text } = req.body;
     if (!text || !text.trim()) {
@@ -135,7 +129,7 @@ router.post("/:id/comment", async (req, res) => {
     }
 
     const newComment = {
-      name: issue.createdBy, 
+      name: "Citizen",
       text,
       time: new Date(),
     };

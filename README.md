@@ -25,30 +25,60 @@ Each report is made visible to local authorities who can respond, upload resolut
 ### ⚙️ Tech Stack
 
 **Frontend:** React + Tailwind CSS + Framer Motion (for smooth UI animations)
-**Backend:** Node.js + Express + MongoDB
+**Backend:** Node.js + Express + MongoDB (Mongoose), express-validator
+**Photos:** Cloudinary
+**Email:** Resend
 **Hosting:**
 
+* Frontend → cPanel subdomain: [reportmla.anashussain.xyz](https://reportmla.anashussain.xyz)
 * Backend → [Render](https://render.com)
-* Frontend → cPanel (under your domain `anashussain.xyz/citycarehyd`)
 
 ---
 
 ## 🔒 Key Functionalities
 
-* Secure user authentication (JWT-based)
-* Image uploads handled with **Multer**
-* Role-based access for **Users** and **Authorities**
+* Secure user authentication (JWT-based, bcrypt-hashed passwords)
+* Role-based access for **Users** and **Authorities**, enforced on the server
+* Photo uploads checked for type (JPG/PNG/WebP) and size (5 MB), stored on **Cloudinary**
+* Request validation on every write route
 * Responsive UI across all devices
 * Clean and minimal dashboard design using Tailwind CSS
 * Real-time data fetching for fast backend communication
 
 ---
 
-## 🧑‍💻 Developer Notes
+## 🧑‍💻 Running locally
 
-* The backend is optimized for quick API responses and deployed on Render for scalability.
-* The frontend build is configured with a `basename` (`/citycarehyd`) for proper routing on subdomain deployment.
-* Framer Motion is used to enhance transitions, such as smooth fade-in alerts and UI animations.
+```bash
+# Backend
+cd backend
+cp .env.example .env      # fill in MongoDB URL and JWT secret at least
+npm install
+npm start                 # http://localhost:5717
+
+# Frontend
+cd frontend
+cp .env.example .env      # VITE_API_URL=http://localhost:5717
+npm install
+npm run dev
+```
+
+Without Cloudinary keys, photos are saved to `backend/uploads/` so the app still works locally.
+
+### Authority accounts
+
+Authority access is stored on the user (`isAdmin`) and checked on every `/api/authority` request. To grant or remove it for an existing account:
+
+```bash
+cd backend
+npm run make-authority -- someone@example.com
+npm run make-authority -- someone@example.com --remove
+```
+
+### Deploying
+
+* **Frontend:** `npm run build`, then upload the contents of `frontend/dist/` to the subdomain's folder in cPanel. The included `.htaccess` sends every route to `index.html` so page refreshes work.
+* **Backend:** Render runs `npm start` in `backend/`. Set the variables from `backend/.env.example`, including `CORS_ORIGINS` (the frontend address) and `EMAIL_FROM` (a sender on a domain verified in Resend).
 
 ---
 

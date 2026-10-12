@@ -1,26 +1,23 @@
 // routes/authority.js
 import express from "express";
-import multer from "multer";
 import dotenv from"dotenv"
-import path from "path";
 import Issue from "../models/Issue.js";
 import resolvedEmail from "../workers/resolvedEmail.js";
 import authMiddleware from "../middleware/authMiddleware.js";
+import requireAuthority from "../middleware/requireAuthority.js";
+import { acceptImage, saveImage } from "../utils/imageUpload.js";
+import { validate, commentRules, mongoIdParam } from "../middleware/validate.js";
+import escapeHtml from "../utils/escapeHtml.js";
 
 dotenv.config()
 
 const router = express.Router();
 
-// Configure multer for resolved uploads (separate folder)
-const resolvedStorage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, "resolveduploads/"),
-  filename: (req, file, cb) =>
-    cb(null, Date.now() + path.extname(file.originalname)),
-});
-const resolvedUpload = multer({ storage: resolvedStorage });
+// Every route in this file is for authorities only: logged in AND isAdmin in the database.
+router.use(authMiddleware, requireAuthority);
 
 // DASHBOARD 
-router.get("/dashboard", authMiddleware, async (req, res) => {
+router.get("/dashboard", async (req, res) => {
   try {
     const issues = await Issue.find().lean();
 
@@ -61,7 +58,7 @@ router.get("/dashboard", authMiddleware, async (req, res) => {
 });
 
 // AREA ISSUES (with counts)
-router.get("/area/:areaName", authMiddleware, async (req, res) => {
+router.get("/area/:areaName", async (req, res) => {
   try {
     const { areaName } = req.params;
     const issues = await Issue.find({ constituency: areaName }).lean();
@@ -85,7 +82,7 @@ router.get("/area/:areaName", authMiddleware, async (req, res) => {
 });
 
 // ISSUE DETAILS FOR AUTHORITY 
-router.get("/issue/:id", authMiddleware, async (req, res) => {
+router.get("/issue/:id", mongoIdParam, validate, async (req, res) => {
   try {
     const { id } = req.params;
     const issue = await Issue.findById(id).lean();
@@ -99,7 +96,7 @@ router.get("/issue/:id", authMiddleware, async (req, res) => {
 });
 
 // AUTHORITY COMMENT on ISSUE 
-router.post("/issue/:id/comment", authMiddleware, async (req, res) => {
+router.post("/issue/:id/comment", mongoIdParam, commentRules, validate, async (req, res) => {
   try {
     const { id } = req.params;
     const { text } = req.body;
@@ -125,7 +122,7 @@ router.post("/issue/:id/comment", authMiddleware, async (req, res) => {
 });
 
 // RESOLVE: Upload resolved proof photo 
-router.post("/issue/:id/resolve", authMiddleware, resolvedUpload.single("resolvedPhoto"), async (req, res) => {
+router.post("/issue/:id/resolve", mongoIdParam, validate, acceptImage("resolvedPhoto"), async (req, res) => {
   try {
     const { id } = req.params;
     const issue = await Issue.findById(id);
@@ -133,7 +130,7 @@ router.post("/issue/:id/resolve", authMiddleware, resolvedUpload.single("resolve
 
     if (!req.file) return res.status(400).json({ message: "No file uploaded" });
 
-   issue.resolvedPhoto = `/resolveduploads/${req.file.filename}`;
+   issue.resolvedPhoto = await saveImage(req.file, "resolved");
    issue.status = "Resolved";
      
     
@@ -147,8 +144,8 @@ router.post("/issue/:id/resolve", authMiddleware, resolvedUpload.single("resolve
           <p>Hello,</p>
           <p>Good news! The issue you reported has been successfully <b>resolved</b> 🎉</p>
           
-          <p><b>Issue:</b> ${issue.title}</p>
-          <p><b>Location:</b> ${issue.constituency}</p>
+          <p><b>Issue:</b> ${escapeHtml(issue.title)}</p>
+          <p><b>Location:</b> ${escapeHtml(issue.constituency)}</p>
           <p><b>Status:</b> Resolved ✅</p>    
           <br/><br/>
           <p>Thank you for helping improve our city!</p>

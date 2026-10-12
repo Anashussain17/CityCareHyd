@@ -16,7 +16,12 @@ import "./dbConnect.js"
 const app = express();
 const PORT=process.env.PORT
 // Middleware
-app.use(cors());
+// In production only the listed frontend(s) may call the API (CORS_ORIGINS).
+const allowedOrigins = (process.env.CORS_ORIGINS || "")
+  .split(",")
+  .map((o) => o.trim())
+  .filter(Boolean);
+app.use(cors(allowedOrigins.length ? { origin: allowedOrigins } : {}));
 app.use(express.json());
 
 // Serve uploaded images
