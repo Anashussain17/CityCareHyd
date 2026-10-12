@@ -3,13 +3,14 @@ import express from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
+import { validate, signupRules, loginRules } from "../middleware/validate.js";
 // import sendEmail from "../workers/sendEmail.js"
 import dotenv from "dotenv"
 dotenv.config()
 const router = express.Router();
 
 // Signup
-router.post("/signup", async (req, res) => {
+router.post("/signup", signupRules, validate, async (req, res) => {
   try {
     const { email, password, confirmPassword } = req.body;
 
@@ -80,7 +81,7 @@ router.post("/signup", async (req, res) => {
 
 
 // Login
-router.post("/login", async (req, res) => {
+router.post("/login", loginRules, validate, async (req, res) => {
   try {
     const { email, password } = req.body;
     

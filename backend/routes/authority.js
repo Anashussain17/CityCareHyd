@@ -6,6 +6,8 @@ import resolvedEmail from "../workers/resolvedEmail.js";
 import authMiddleware from "../middleware/authMiddleware.js";
 import requireAuthority from "../middleware/requireAuthority.js";
 import { acceptImage, saveImage } from "../utils/imageUpload.js";
+import { validate, commentRules, mongoIdParam } from "../middleware/validate.js";
+import escapeHtml from "../utils/escapeHtml.js";
 
 dotenv.config()
 
@@ -80,7 +82,7 @@ router.get("/area/:areaName", async (req, res) => {
 });
 
 // ISSUE DETAILS FOR AUTHORITY 
-router.get("/issue/:id", async (req, res) => {
+router.get("/issue/:id", mongoIdParam, validate, async (req, res) => {
   try {
     const { id } = req.params;
     const issue = await Issue.findById(id).lean();
@@ -94,7 +96,7 @@ router.get("/issue/:id", async (req, res) => {
 });
 
 // AUTHORITY COMMENT on ISSUE 
-router.post("/issue/:id/comment", async (req, res) => {
+router.post("/issue/:id/comment", mongoIdParam, commentRules, validate, async (req, res) => {
   try {
     const { id } = req.params;
     const { text } = req.body;
@@ -120,7 +122,7 @@ router.post("/issue/:id/comment", async (req, res) => {
 });
 
 // RESOLVE: Upload resolved proof photo 
-router.post("/issue/:id/resolve", acceptImage("resolvedPhoto"), async (req, res) => {
+router.post("/issue/:id/resolve", mongoIdParam, validate, acceptImage("resolvedPhoto"), async (req, res) => {
   try {
     const { id } = req.params;
     const issue = await Issue.findById(id);
@@ -142,8 +144,8 @@ router.post("/issue/:id/resolve", acceptImage("resolvedPhoto"), async (req, res)
           <p>Hello,</p>
           <p>Good news! The issue you reported has been successfully <b>resolved</b> 🎉</p>
           
-          <p><b>Issue:</b> ${issue.title}</p>
-          <p><b>Location:</b> ${issue.constituency}</p>
+          <p><b>Issue:</b> ${escapeHtml(issue.title)}</p>
+          <p><b>Location:</b> ${escapeHtml(issue.constituency)}</p>
           <p><b>Status:</b> Resolved ✅</p>    
           <br/><br/>
           <p>Thank you for helping improve our city!</p>
