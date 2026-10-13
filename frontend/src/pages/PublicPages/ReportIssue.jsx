@@ -1,5 +1,5 @@
 // src/pages/ReportIssue.jsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Alert from "../../components/Alert";
@@ -16,6 +16,10 @@ function ReportIssue() {
   const [location, setLocation] = useState({ latitude: null, longitude: null, accuracy: null });
   const [loadingLocation, setLoadingLocation] = useState(false);
   const [showAlert, setShowAlert] = useState(null);
+  // Blocks a second submit while the first upload is still running.
+  // The ref updates instantly; the state re-renders the button.
+  const submittingRef = useRef(false);
+  const [submitting, setSubmitting] = useState(false);
 
   // Auto-get location when page loads
   useEffect(() => {
@@ -64,6 +68,7 @@ function ReportIssue() {
 
   const handleSubmit = async (e) => {
   e.preventDefault();
+  if (submittingRef.current) return;
 
   if (!location.latitude || !location.longitude) {
     setShowAlert({
@@ -99,6 +104,8 @@ function ReportIssue() {
     formData.append("latitude", location.latitude);
     formData.append("longitude", location.longitude);
 
+    submittingRef.current = true;
+    setSubmitting(true);
     await axios.post(`${import.meta.env.VITE_API_URL}/api/issues`, formData, {
       headers: { "Content-Type": "multipart/form-data", token: localStorage.getItem("token") },
     });
@@ -106,6 +113,9 @@ function ReportIssue() {
     setShowAlert({ type: "success", msg: "Report Submitted ✅" });
     setTimeout(() => navigate(`/issues/constituency/${constituency}`), 2000);
   } catch (err) {
+    // Let the user fix the problem and try again
+    submittingRef.current = false;
+    setSubmitting(false);
     if (err.response?.status === 401) {
       localStorage.removeItem("token");
       navigate("/login");
@@ -263,9 +273,10 @@ function ReportIssue() {
         {/* Submit Button */}
         <button
           type="submit"
-          className="w-full mb-2 bg-green-600 text-white py-2 rounded hover:bg-green-700"
+          disabled={submitting}
+          className="w-full mb-2 bg-green-600 text-white py-2 rounded hover:bg-green-700 disabled:opacity-60 disabled:cursor-not-allowed"
         >
-          Submit Issue Report
+          {submitting ? "Submitting..." : "Submit Issue Report"}
         </button>
 
         <Alert showAlert={showAlert} />
